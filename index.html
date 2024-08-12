@@ -3,9 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Simple Audio Player with Playlist</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        .player {
+            margin-top: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            cursor: pointer;
+            margin: 5px 0;
+            padding: 5px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        li:hover {
+            background-color: #ccc;
+        }
+    </style>
 </head>
 <body>
-    <h1>Testing Vercel</h1>
+    <h1>Audio Player with Playlist</h1>
+    <input type="file" id="fileInput" accept="audio/*" multiple>
+    <div class="player">
+        <audio id="audioPlayer" controls></audio>
+        <ul id="playlist"></ul>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const playlist = document.getElementById('playlist');
+        let tracks = [];
+
+        fileInput.addEventListener('change', function() {
+            const files = Array.from(this.files);
+            files.forEach((file, index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = file.name;
+                listItem.dataset.index = index;
+                playlist.appendChild(listItem);
+
+                tracks.push({
+                    name: file.name,
+                    file: file,
+                    url: URL.createObjectURL(file)
+                });
+            });
+        });
+
+        playlist.addEventListener('click', function(e) {
+            if (e.target && e.target.nodeName === "LI") {
+                const index = e.target.dataset.index;
+                playTrack(index);
+            }
+        });
+
+        function playTrack(index) {
+            audioPlayer.src = tracks[index].url;
+            audioPlayer.play();
+        }
+    </script>
 </body>
 </html>
